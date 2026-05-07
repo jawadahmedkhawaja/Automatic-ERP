@@ -12,7 +12,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 load_dotenv()
 
 # loading email OR usernames
-userNames = os.getenv('USERNAMES')
+userNames = os.getenv('USERNAMES').split(",")
 
 # loading passwords
 password = os.getenv("PASSWORD")
