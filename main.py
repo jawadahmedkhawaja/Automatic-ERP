@@ -2,7 +2,7 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 import time
-from username_passwords import userNames, password
+import os
 from selenium.webdriver.support.ui import WebDriverWait
 
 
@@ -10,6 +10,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 # Opening Chrome driver
 driver = webdriver.Chrome()
 
+userNames = os.getenv('USERNAMES')
+password = os.getenv("PASSWORD")
 # Opening the link to ERP
 driver.get('https://erp2.ajku.edu.pk/')
 
