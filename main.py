@@ -3,55 +3,86 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 import time
 import os
+from dotenv import load_dotenv
 from selenium.webdriver.support.ui import WebDriverWait
 
+# === LOADING DATA ===
 
+# Loading .env
+load_dotenv()
+
+# loading email OR usernames
+userNames = os.getenv('USERNAMES')
+
+# loading passwords
+password = os.getenv("PASSWORD")
 
 # Opening Chrome driver
 driver = webdriver.Chrome()
 
-userNames = os.getenv('USERNAMES')
-password = os.getenv("PASSWORD")
+
 # Opening the link to ERP
 driver.get('https://erp2.ajku.edu.pk/')
 
 
-
+# Running ERP for every user
 for userName in userNames:
-    # Filling the Email (User Name By university)
+    # Finding email OR username textfield
     email_login = driver.find_element(By.ID, "email")
+    # Filing the email OR username
     email_login.send_keys(userName)
 
+    # Finding password textfield
     pass_input = driver.find_element(By.ID, "pass")
+    # Filling the password
     pass_input.send_keys(password)
 
+    # Finding usertype textfield
     userType_element = driver.find_element(By.ID,"user_type")
+
+    # Filing userType as Student
     userType_element.send_keys("Student")
 
+    # Finding usertype textfield
     dept_element = driver.find_element(By.ID, "dept")
+
+    # Filing the field
     dept_element.send_keys("CS&IT Neelum Campus")
 
+    # Finding login button
     form = driver.find_element(By.NAME, "form_login")
+
+    # Logggin In
     form.submit()
 
+    # Finding the Survey button
     survey_button = driver.find_element(By.LINK_TEXT, "Survey")
+
+    # Click the survey button
     survey_button.click()
 
 
 
-    # Course Survey
-
+    # === COURSE SURVEY ===
     while True:
 
+
+        # Fetching all books for survey
         course_survey = driver.find_elements(
             By.XPATH,
             '//a[contains(@href,"course_survey.php")]'
         )
 
+
+        # If no book has survey remaining break the loop
         if len(course_survey) == 0:
             break
+
+        # Doing survey of first book
         course_survey[0].click()
 
+
+        # Filing all fields
         driver.execute_script('''
         (function () {
 
@@ -120,24 +151,32 @@ for userName in userNames:
         })();
         ''')
 
+
+        # Waiting for form to be submitted
         time.sleep(5)
+
+        # Going back for another course survey
         driver.back()
 
 
 
-    # Teacher Survey
+    # ===   TEACHER SURVEY  ===
     while True:
+
+        # Fetching alL teachers for survey
         teacher_survey = driver.find_elements(
                 By.XPATH,
                 '//a[contains(@href,"teacher_survey.php")]'
             )
-
+        
+        # If no teacher has survey remaining break the loop
         if len(teacher_survey) == 0:
             break
 
+        # Doing survey of first teacher
         teacher_survey[0].click()
         
-
+        # Filing all fields
         driver.execute_script("""
                             (function () {
 
@@ -176,15 +215,24 @@ for userName in userNames:
 
 
 
+        # Waiting for form to be submitted
         time.sleep(5)
+
+        # Going back for another teacher survey
         driver.back()
     
+
+    # Going to home page
     driver.back()
+
+    # Going to login page
     driver.back()
+
+    # Removing all filled fileds
     driver.refresh()
 
 
 
-
+# Closing browser
 driver.quit()
 
